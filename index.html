@@ -6,8 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Manager</title>
-    <script src="./Assets/js/chart.js"></script>
-    <script src="./Assets/js/all.min.js"></script>
     <link rel="stylesheet" href="./Assets/css/all.min.css">
     <link rel="icon" href="./July_2025 Kaaj Button/favicon-102x102.png" type="image/png" sizes="102x102">
     <style>
@@ -87,19 +85,14 @@
         }
 
         h1 {
-    font-size: 1.8rem;
-    background: var(--card-gradient);
-    
-    /* Standard property pehle likhein (for Firefox, etc.) */
-    background-clip: text;
-    -webkit-background-clip: text;
-    
-    /* Text transparent karne ke liye */
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    
-    font-weight: 700;
-}
+            font-size: 1.8rem;
+            background: var(--card-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
 
         .header-actions {
             display: flex;
@@ -193,6 +186,14 @@
         }
 
         .savings-card .value {
+            color: #9d4edd;
+        }
+
+        .loan-card .value {
+            color: #fca311;
+        }
+
+        .amanat-card .value {
             color: #9d4edd;
         }
 
@@ -363,10 +364,28 @@
             background-color: rgba(157, 78, 221, 0.1);
             border-left: 4px solid #9d4edd;
         }
+
+        .loan-given-row {
+            background-color: rgba(252, 163, 17, 0.1);
+            border-left: 4px solid #fca311;
+        }
+
+        .loan-taken-row {
+            background-color: rgba(252, 163, 17, 0.15);
+            border-left: 4px solid #e69500;
+        }
+
+        .amanat-row {
+            background-color: rgba(157, 78, 221, 0.15);
+            border-left: 4px solid #9d4edd;
+        }
         
         .dark-mode .income-row { background-color: rgba(76, 201, 240, 0.07); }
         .dark-mode .expense-row { background-color: rgba(247, 37, 133, 0.07); }
         .dark-mode .savings-row { background-color: rgba(157, 78, 221, 0.07); }
+        .dark-mode .loan-given-row { background-color: rgba(252, 163, 17, 0.07); }
+        .dark-mode .loan-taken-row { background-color: rgba(252, 163, 17, 0.1); }
+        .dark-mode .amanat-row { background-color: rgba(157, 78, 221, 0.1); }
 
         .action-cell {
             display: flex;
@@ -452,14 +471,14 @@
         }
 
         .category-salary { background-color: rgba(76, 201, 240, 0.15); color: #4cc9f0; }
-        .category-soft-food { background-color: rgba(106, 176, 76, 0.15); color: #6ab04c; }
-        .category-hard-food { background-color: rgba(252, 163, 17, 0.15); color: #fca311; }
         .category-home { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
         .category-health { background-color: rgba(67, 97, 238, 0.15); color: #4361ee; }
         .category-transport { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
-        .category-entertainment { background-color: rgba(155, 81, 224, 0.15); color: #9b51e0; }
-        .category-gadgets { background-color: rgba(45, 156, 219, 0.15); color: #2d9cdb; }
         .category-other { background-color: rgba(153, 153, 153, 0.15); color: #999; }
+        .category-zarooriat { background-color: rgba(76, 201, 240, 0.15); color: #4cc9f0; }
+        .category-khwahishat { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
+        .category-seekh { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
+        .category-business { background-color: rgba(252, 163, 17, 0.15); color: #fca311; }
 
         .type-badge {
             padding: 4px 10px;
@@ -471,6 +490,9 @@
         .income-badge { background-color: rgba(76, 201, 240, 0.15); color: #4cc9f0; }
         .expense-badge { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
         .savings-badge { background-color: rgba(157, 78, 221, 0.15); color: #9d4edd; }
+        .loan-given-badge { background-color: rgba(252, 163, 17, 0.15); color: #fca311; }
+        .loan-taken-badge { background-color: rgba(252, 163, 17, 0.25); color: #fca311; }
+        .amanat-badge { background-color: rgba(157, 78, 221, 0.25); color: #9d4edd; }
 
         .backup-actions {
             display: flex;
@@ -523,16 +545,90 @@
             cursor: not-allowed;
         }
 
+        /* Updated Footer Styles */
         footer {
-            text-align: center;
-            padding: 25px 0;
-            color: var(--gray);
-            margin-top: 35px;
-            border-top: 1px solid var(--primary);
-            font-size: 0.85rem;
-            background: var(--light);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 25px;
+            margin-top: 40px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .footer-info h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .footer-info p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-links a:nth-child(1):hover { background: #34b7f1; }
+        .social-links a:nth-child(2):hover { background: #0077b5; }
+        .social-links a:nth-child(3):hover { background: #333; }
+        .social-links a:nth-child(4):hover { background: #25d366; }
+        .social-links a:nth-child(5):hover { background: #1877f2; }
+        .social-links a:nth-child(6):hover { background: #ff0000; }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 768px) {
@@ -545,6 +641,9 @@
             header { flex-direction: column; gap: 15px; text-align: center; }
             .header-actions { width: 100%; justify-content: center; }
             .backup-actions { flex-direction: column; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .social-links { justify-content: center; }
+            .dashboard { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
@@ -554,6 +653,7 @@
             h1 { font-size: 1.6rem; }
             .charts-section { grid-template-columns: 1fr; }
             .chart-wrapper { height: 250px; }
+            .social-links a { width: 40px; height: 40px; font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -561,14 +661,14 @@
     <div class="container">
         <header>
             <div class="logo">
-    <i class="fas fa-money-bill-wave fa-2x" 
-       style="background: var(--card-gradient); 
-              background-clip: text;
-              -webkit-background-clip: text;
-              color: transparent;
-              -webkit-text-fill-color: transparent;"></i>
-    <h1>Expense Manager</h1>
-</div>
+                <i class="fas fa-money-bill-wave fa-2x" 
+                   style="background: var(--card-gradient); 
+                          background-clip: text;
+                          -webkit-background-clip: text;
+                          color: transparent;
+                          -webkit-text-fill-color: transparent;"></i>
+                <h1>Expense Manager</h1>
+            </div>
             <div class="header-actions">
                 <button id="resetAll" class="reset-btn">
                     <i class="fas fa-redo"></i> Reset Data
@@ -579,7 +679,7 @@
                 <button class="report-btn" id="generateReport">
                     <i class="fas fa-file-alt"></i> Generate Report
                 </button>
-                <button class="backup-btn" id="backupBtn" >
+                <button class="backup-btn" id="backupBtn">
                     <i class="fas fa-cloud-download-alt"></i> Backup
                 </button>
             </div>
@@ -598,8 +698,16 @@
                 <h2><i class="fas fa-piggy-bank"></i> Total Savings</h2>
                 <div class="value"><span>$</span><span id="totalSavings">0.00</span></div>
             </div>
+            <div class="card loan-card">
+                <h2><i class="fas fa-hand-holding-usd"></i> Net Loan</h2>
+                <div class="value"><span>$</span><span id="netLoan">0.00</span></div>
+            </div>
+            <div class="card amanat-card">
+                <h2><i class="fas fa-shield-alt"></i> Amanat Balance</h2>
+                <div class="value"><span>$</span><span id="amanatBalance">0.00</span></div>
+            </div>
             <div class="card balance-card">
-                <h2><i class="fas fa-wallet"></i> Remaining Balance</h2>
+                <h2><i class="fas fa-wallet"></i> Net Balance</h2>
                 <div class="value"><span>$</span><span id="remainingBalance">0.00</span></div>
             </div>
         </section>
@@ -615,10 +723,16 @@
                     <div class="form-group">
                         <label for="type"><i class="fas fa-exchange-alt"></i> Type</label>
                         <select id="type" required>
-                            <option value="Expense" selected>Expense</option>
-                            <option value="Income">Income</option>
-                            <option value="Savings">Savings</option>
-                            <option value="Savings-Withdrawal">Savings Withdrawal</option>
+                            <option value="Expense" selected>Kharch</option>
+                            <option value="Income">Aamdani</option>
+                            <option value="Savings">Bachat</option>
+                            <option value="Savings-Withdrawal">Bachat Nikasi</option>
+                            <option value="Loan-Given">Udhar Diya</option>
+                            <option value="Loan-Taken">Udhar Liya</option>
+                            <option value="Loan-Returned">Udhar Wapas Kiya</option>
+                            <option value="Loan-Received">Udhar Wapas Mila</option>
+                            <option value="Amanat">Amanat Jama</option>
+                            <option value="Amanat-Withdrawal">Amanat Nikasi</option>
                         </select>
                     </div>
                     <div class="form-group main-category-group">
@@ -636,16 +750,20 @@
                         <label for="subCategory"><i class="fas fa-tag"></i> Sub Category</label>
                         <select id="subCategory">
                             <option value="">Sub Category</option>
-                            <option value="Salary">Salary</option>
-                            <option value="Soft Food">Soft Food</option>
-                            <option value="Hard Food">Hard Food</option>
+                            <option value="Zarooriat">Zarooriat</option>
+                            <option value="Khwahishat">Khwahishat</option>
+                            <option value="Seekh">Seekh</option>
+                            <option value="Business">Business</option>
                             <option value="Home">Home</option>
                             <option value="Health">Health</option>
                             <option value="Transport">Transport</option>
-                            <option value="Entertainment">Entertainment</option>
-                            <option value="Gadgets">Gadgets</option>
+                            <option value="Salary">Salary</option>
                             <option value="Other">Other</option>
                         </select>
+                    </div>
+                    <div class="form-group person-name-group" style="display: none;">
+                        <label for="personName"><i class="fas fa-user"></i> Person Name (Required)</label>
+                        <input type="text" id="personName" placeholder="Enter person name">
                     </div>
                     <div class="form-group">
                         <label for="date"><i class="fas fa-calendar"></i> Date</label>
@@ -680,10 +798,16 @@
                 <div class="form-group">
                     <label for="filterCategory"><i class="fas fa-filter"></i> Category</label>
                     <select id="filterCategory">
-                        <option value="">All Categories</option>
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
-                        <option value="Savings">Savings</option>
+                        <option value="">Tamam Categories</option>
+                        <option value="Income">Aamdani</option>
+                        <option value="Expense">Kharch</option>
+                        <option value="Savings">Bachat</option>
+                        <option value="Loan-Given">Udhar Diya</option>
+                        <option value="Loan-Taken">Udhar Liya</option>
+                        <option value="Loan-Returned">Udhar Wapas Kiya</option>
+                        <option value="Loan-Received">Udhar Wapas Mila</option>
+                        <option value="Amanat">Amanat Jama</option>
+                        <option value="Amanat-Withdrawal">Amanat Nikasi</option>
                         <option value="Zarooriat">Zarooriat</option>
                         <option value="Khwahishat">Khwahishat</option>
                         <option value="Seekh">Seekh</option>
@@ -701,7 +825,7 @@
         </section>
 
         <section class="entries-section">
-            <h2><i class="fas fa-list"></i> Expense & Income Entries</h2>
+            <h2><i class="fas fa-list"></i> All Entries</h2>
             <div class="bulk-actions">
                 <button class="btn btn-danger" id="deleteSelected">
                     <i class="fas fa-trash"></i> Delete Selected
@@ -714,6 +838,7 @@
                             <th class="checkbox-cell"><input type="checkbox" id="selectAllEntries"></th>
                             <th>Date</th>
                             <th>Description</th>
+                            <th>Person</th>
                             <th>Main Category</th>
                             <th>Sub Category</th>
                             <th>Type</th>
@@ -777,6 +902,7 @@
                                 <th class="checkbox-cell"><input type="checkbox" id="selectAllTrash"></th>
                                 <th>Date</th>
                                 <th>Description</th>
+                                <th>Person</th>
                                 <th>Main Category</th>
                                 <th>Sub Category</th>
                                 <th>Type</th>
@@ -798,10 +924,13 @@
         </section>
 
         <section class="backup-section">
-            <h2><i class="fas fa-database" #backupBtn></i> Backup & Restore</h2>
+            <h2><i class="fas fa-database"></i> Backup & Restore</h2>
             <div class="backup-actions">
                 <button class="btn btn-success" id="exportData">
                     <i class="fas fa-file-export"></i> Export to File
+                </button>
+                <button class="btn btn-secondary" id="changeBackupDir" title="Change backup folder">
+                    <i class="fas fa-folder-open"></i> Change Backup Folder
                 </button>
                 <button class="btn btn-primary" id="importData">
                     <i class="fas fa-file-import"></i> Import from File
@@ -816,14 +945,65 @@
         </section>
 
         <footer>
-            <p>Cash Management System v1.1 (Aug 4, 2025) <br> ©Copyright 2025 by I.T. Department of ALQAAB Web Studio by ALQAAB Org_Shahbaz Ali</p>
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Expense Manager</h3>
+                    <p>Cash Management System v1.2 (<span id="currentDate">Aug 4, 2025</span>)<br>
+                    ©Copyright 2025 by I.T. Department of ALQAAB Web Studio by ALQAAB Org_Shahbaz Ali</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://maps.app.goo.gl/VRAW4Poyuh58bCPw5" target="_blank" title="Location">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/alqaaborg" target="_blank" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com/ALQAAB-Org" target="_blank" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://wa.me/923261182021" target="_blank" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.facebook.com/alqaab.org" target="_blank" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@ALQAAB_YT_Studio" target="_blank" title="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Designed with ❤️ by ALQAAB Organization</p>
+            </div>
         </footer>
     </div>
 
     <script>
         // Database and storage management
         const DB_NAME = 'ExpenseManagerDB';
-        const DB_VERSION = 1;
+        const DB_VERSION = 2; // Updated version for new schema
+        
+        // Type display mapping (Roman Urdu me)
+        const typeDisplayMap = {
+            "Expense": "Kharch",
+            "Income": "Aamdani",
+            "Savings": "Bachat",
+            "Savings-Withdrawal": "Bachat Nikasi",
+            "Loan-Given": "Udhar Diya",
+            "Loan-Taken": "Udhar Liya", 
+            "Loan-Returned": "Udhar Wapas Kiya",
+            "Loan-Received": "Udhar Wapas Mila",
+            "Amanat": "Amanat Jama",
+            "Amanat-Withdrawal": "Amanat Nikasi"
+        };
+
+        function getDisplayType(type) {
+            return typeDisplayMap[type] || type;
+        }
+        
         const STORE_ENTRIES = 'entries';
         const STORE_TRASH = 'trash';
         
@@ -849,6 +1029,8 @@
         const totalIncome = document.getElementById('totalIncome');
         const totalExpenses = document.getElementById('totalExpenses');
         const totalSavings = document.getElementById('totalSavings');
+        const netLoan = document.getElementById('netLoan');
+        const amanatBalance = document.getElementById('amanatBalance');
         const remainingBalance = document.getElementById('remainingBalance');
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
@@ -858,7 +1040,10 @@
         const categorySelect = document.getElementById('mainCategory');
         const subCategorySelect = document.getElementById('subCategory');
         const typeSelect = document.getElementById('type');
+        const personNameInput = document.getElementById('personName');
+        const personNameGroup = document.querySelector('.person-name-group');
         const exportBtn = document.getElementById('exportData');
+        const changeBackupBtn = document.getElementById('changeBackupDir');
         const importBtn = document.getElementById('importData');
         const saveToDriveBtn = document.getElementById('saveToDrive');
         const generateReportBtn = document.getElementById('generateReport');
@@ -918,6 +1103,7 @@
                         const entriesStore = db.createObjectStore(STORE_ENTRIES, { keyPath: 'id' });
                         entriesStore.createIndex('date', 'date', { unique: false });
                         entriesStore.createIndex('type', 'type', { unique: false });
+                        entriesStore.createIndex('personName', 'personName', { unique: false });
                     }
                     
                     if (!db.objectStoreNames.contains(STORE_TRASH)) {
@@ -1019,8 +1205,16 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
             
+            // Update footer date
+            const currentDate = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US', options);
+            
             // Set default type to Expense
             typeSelect.value = 'Expense';
+            
+            // Hide person name group initially
+            personNameGroup.style.display = 'none';
             
             // Set theme based on preference
             if (localStorage.getItem('darkMode') === 'enabled') {
@@ -1064,7 +1258,7 @@
                     '<i class="fas fa-chevron-down"></i> Show Trash';
             });
             
-            // Type change handling
+            // Type change handling - FIXED: Person Name field only shows for loan/amanat
             typeSelect.addEventListener('change', function() {
                 const mainCategoryGroup = document.querySelector('.main-category-group');
                 const subCategoryGroup = document.querySelector('.sub-category-group');
@@ -1074,14 +1268,23 @@
                     subCategoryGroup.style.display = 'block';
                     subCategorySelect.value = 'Salary';
                     categorySelect.value = '';
+                    personNameGroup.style.display = 'none';
                 } else if (this.value === 'Savings' || this.value === 'Savings-Withdrawal') {
                     mainCategoryGroup.style.display = 'none';
                     subCategoryGroup.style.display = 'none';
                     subCategorySelect.value = '';
                     categorySelect.value = '';
+                    personNameGroup.style.display = 'none';
+                } else if (this.value.includes('Loan') || this.value.includes('Amanat')) {
+                    mainCategoryGroup.style.display = 'none';
+                    subCategoryGroup.style.display = 'none';
+                    subCategorySelect.value = '';
+                    categorySelect.value = '';
+                    personNameGroup.style.display = 'block';
                 } else {
                     mainCategoryGroup.style.display = 'block';
                     subCategoryGroup.style.display = 'block';
+                    personNameGroup.style.display = 'none';
                 }
             });
             
@@ -1111,6 +1314,7 @@
             
             // Backup and restore
             exportBtn.addEventListener('click', exportData);
+            if (changeBackupBtn) changeBackupBtn.addEventListener('click', changeBackupDirectory);
             importBtn.addEventListener('click', () => document.getElementById('fileInput')?.click());
             saveToDriveBtn.addEventListener('click', saveToGoogleDrive);
             generateReportBtn.addEventListener('click', generateTextReport);
@@ -1185,9 +1389,15 @@
             const type = document.getElementById('type').value;
             const date = document.getElementById('date').value;
             const note = document.getElementById('note').value;
+            const personName = document.getElementById('personName').value;
             
             if (amount <= 0) {
                 alert('Amount must be greater than 0');
+                return;
+            }
+            
+            if ((type.includes('Loan') || type.includes('Amanat')) && !personName.trim()) {
+                alert('Please enter person name for loan/amanat entries');
                 return;
             }
             
@@ -1198,11 +1408,12 @@
                         return {
                             ...entry,
                             amount,
-                            mainCategory: type === 'Income' || type.includes('Savings') ? '' : mainCategory,
-                            subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') ? '' : subCategory),
+                            mainCategory: type === 'Income' || type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : mainCategory,
+                            subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : subCategory),
                             type,
                             date,
-                            note
+                            note,
+                            personName: type.includes('Loan') || type.includes('Amanat') ? personName : ''
                         };
                     }
                     return entry;
@@ -1215,11 +1426,12 @@
                 const newEntry = {
                     id: Date.now(),
                     amount,
-                    mainCategory: type === 'Income' || type.includes('Savings') ? '' : mainCategory,
-                    subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') ? '' : subCategory),
+                    mainCategory: type === 'Income' || type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : mainCategory,
+                    subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : subCategory),
                     type,
                     date,
-                    note
+                    note,
+                    personName: type.includes('Loan') || type.includes('Amanat') ? personName : ''
                 };
                 
                 entries.push(newEntry);
@@ -1236,6 +1448,7 @@
             // Reset category fields display
             document.querySelector('.main-category-group').style.display = 'block';
             document.querySelector('.sub-category-group').style.display = 'block';
+            personNameGroup.style.display = 'none';
             
             // Update UI
             updateDashboard();
@@ -1260,12 +1473,40 @@
                 .filter(entry => entry.type === 'Savings-Withdrawal')
                 .reduce((sum, entry) => sum + entry.amount, 0);
             
+            const loanGiven = entries
+                .filter(entry => entry.type === 'Loan-Given')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanTaken = entries
+                .filter(entry => entry.type === 'Loan-Taken')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanReturned = entries
+                .filter(entry => entry.type === 'Loan-Returned')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanReceived = entries
+                .filter(entry => entry.type === 'Loan-Received')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const amanatDeposit = entries
+                .filter(entry => entry.type === 'Amanat')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const amanatWithdrawal = entries
+                .filter(entry => entry.type === 'Amanat-Withdrawal')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
             const netSavings = savings - savingsWithdrawals;
-            const balance = income - expenses - netSavings;
+            const netLoanAmount = (loanTaken + loanReceived) - (loanGiven + loanReturned);
+            const netAmanat = amanatDeposit - amanatWithdrawal;
+            const balance = income - expenses - netSavings + netLoanAmount + netAmanat;
             
             totalIncome.textContent = income.toFixed(2);
             totalExpenses.textContent = expenses.toFixed(2);
             totalSavings.textContent = netSavings.toFixed(2);
+            netLoan.textContent = netLoanAmount.toFixed(2);
+            amanatBalance.textContent = netAmanat.toFixed(2);
             remainingBalance.textContent = balance.toFixed(2);
         }
         
@@ -1279,6 +1520,7 @@
             let filteredEntries = entries.filter(entry => {
                 const matchesSearch = !searchTerm || 
                     (entry.note && entry.note.toLowerCase().includes(searchTerm)) ||
+                    (entry.personName && entry.personName.toLowerCase().includes(searchTerm)) ||
                     entry.mainCategory.toLowerCase().includes(searchTerm) ||
                     entry.subCategory.toLowerCase().includes(searchTerm);
                 
@@ -1315,21 +1557,32 @@
             
             noEntries.style.display = 'none';
             entriesList.innerHTML = pageEntries.map(entry => {
-                let typeClass = entry.type.toLowerCase();
+                let typeClass = entry.type.toLowerCase().replace(' ', '-');
                 if (entry.type === 'Savings-Withdrawal') {
                     typeClass = 'savings';
+                } else if (entry.type === 'Loan-Given') {
+                    typeClass = 'loan-given';
+                } else if (entry.type === 'Loan-Taken') {
+                    typeClass = 'loan-taken';
+                } else if (entry.type === 'Amanat' || entry.type === 'Amanat-Withdrawal') {
+                    typeClass = 'amanat';
                 }
+                
+                const isPositive = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
+                                 entry.type === 'Loan-Taken' || entry.type === 'Loan-Received' ||
+                                 entry.type === 'Amanat-Withdrawal';
                 
                 return `
                 <tr class="${typeClass}-row">
                     <td class="checkbox-cell"><input type="checkbox" class="entry-checkbox" data-id="${entry.id}"></td>
                     <td>${formatDate(entry.date)}</td>
                     <td>${entry.note || 'No description'}</td>
+                    <td>${entry.personName || '-'}</td>
                     <td>${entry.mainCategory ? `<span class="main-category">${entry.mainCategory}</span>` : '-'}</td>
                     <td>${entry.subCategory ? `<span class="entry-category category-${entry.subCategory.toLowerCase().replace(' ', '-')}">${entry.subCategory}</span>` : '-'}</td>
-                    <td><span class="type-badge ${typeClass}-badge">${entry.type}</span></td>
-                    <td class="${entry.type === 'Income' ? 'income' : (entry.type === 'Savings-Withdrawal' ? 'income' : 'expense')}">
-                        ${entry.type === 'Income' || entry.type === 'Savings-Withdrawal' ? '+' : '-'}$${entry.amount.toFixed(2)}
+                    <td><span class="type-badge ${typeClass}-badge">${getDisplayType(entry.type)}</span></td>
+                    <td class="${isPositive ? 'income' : 'expense'}">
+                        ${isPositive ? '+' : '-'}$${entry.amount.toFixed(2)}
                     </td>
                     <td class="action-cell">
                         <button class="action-btn edit-btn" onclick="editEntry(${entry.id})">
@@ -1402,21 +1655,32 @@
             
             noTrash.style.display = 'none';
             trashList.innerHTML = trash.map(entry => {
-                let typeClass = entry.type.toLowerCase();
+                let typeClass = entry.type.toLowerCase().replace(' ', '-');
                 if (entry.type === 'Savings-Withdrawal') {
                     typeClass = 'savings';
+                } else if (entry.type === 'Loan-Given') {
+                    typeClass = 'loan-given';
+                } else if (entry.type === 'Loan-Taken') {
+                    typeClass = 'loan-taken';
+                } else if (entry.type === 'Amanat' || entry.type === 'Amanat-Withdrawal') {
+                    typeClass = 'amanat';
                 }
+                
+                const isPositive = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
+                                 entry.type === 'Loan-Taken' || entry.type === 'Loan-Received' ||
+                                 entry.type === 'Amanat-Withdrawal';
                 
                 return `
                 <tr class="${typeClass}-row">
                     <td class="checkbox-cell"><input type="checkbox" class="trash-checkbox" data-id="${entry.id}"></td>
                     <td>${formatDate(entry.date)}</td>
                     <td>${entry.note || 'No description'}</td>
+                    <td>${entry.personName || '-'}</td>
                     <td>${entry.mainCategory ? `<span class="main-category">${entry.mainCategory}</span>` : '-'}</td>
                     <td>${entry.subCategory ? `<span class="entry-category category-${entry.subCategory.toLowerCase().replace(' ', '-')}">${entry.subCategory}</span>` : '-'}</td>
-                    <td><span class="type-badge ${typeClass}-badge">${entry.type}</span></td>
-                    <td class="${entry.type === 'Income' ? 'income' : (entry.type === 'Savings-Withdrawal' ? 'income' : 'expense')}">
-                        ${entry.type === 'Income' || entry.type === 'Savings-Withdrawal' ? '+' : '-'}$${entry.amount.toFixed(2)}
+                    <td><span class="type-badge ${typeClass}-badge">${getDisplayType(entry.type)}</span></td>
+                    <td class="${isPositive ? 'income' : 'expense'}">
+                        ${isPositive ? '+' : '-'}$${entry.amount.toFixed(2)}
                     </td>
                     <td class="action-cell">
                         <button class="action-btn restore-btn" onclick="restoreEntry(${entry.id})">
@@ -1449,6 +1713,7 @@
             document.getElementById('type').value = entry.type;
             document.getElementById('date').value = entry.date;
             document.getElementById('note').value = entry.note || '';
+            document.getElementById('personName').value = entry.personName || '';
             
             // Adjust category fields display based on type
             const mainCategoryGroup = document.querySelector('.main-category-group');
@@ -1457,12 +1722,19 @@
             if (entry.type === 'Income') {
                 mainCategoryGroup.style.display = 'none';
                 subCategoryGroup.style.display = 'block';
+                personNameGroup.style.display = 'none';
             } else if (entry.type === 'Savings' || entry.type === 'Savings-Withdrawal') {
                 mainCategoryGroup.style.display = 'none';
                 subCategoryGroup.style.display = 'none';
+                personNameGroup.style.display = 'none';
+            } else if (entry.type.includes('Loan') || entry.type.includes('Amanat')) {
+                mainCategoryGroup.style.display = 'none';
+                subCategoryGroup.style.display = 'none';
+                personNameGroup.style.display = 'block';
             } else {
                 mainCategoryGroup.style.display = 'block';
                 subCategoryGroup.style.display = 'block';
+                personNameGroup.style.display = 'none';
             }
             
             // Set editing mode
@@ -1657,24 +1929,140 @@
             return { labels: categories, data };
         }
         
-        function exportData() {
+        // Helper: generate a unique filename for each backup
+        function getUniqueBackupFilename() {
+            const now = new Date();
+            const pad = (n) => n.toString().padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const mm = pad(now.getMonth() + 1);
+            const dd = pad(now.getDate());
+            const hh = pad(now.getHours());
+            const min = pad(now.getMinutes());
+            const ss = pad(now.getSeconds());
+            return `expense_manager_backup_${yyyy}${mm}${dd}_${hh}${min}${ss}.json`;
+        }
+
+        // IndexedDB helpers to store/retrieve directory handle
+        function saveDirectoryHandle(dirHandle) {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open('fsHandleDB', 1);
+                req.onupgradeneeded = (e) => {
+                    const idb = e.target.result;
+                    if (!idb.objectStoreNames.contains('handles')) idb.createObjectStore('handles');
+                };
+                req.onsuccess = (e) => {
+                    const idb = e.target.result;
+                    const tx = idb.transaction('handles', 'readwrite');
+                    tx.objectStore('handles').put(dirHandle, 'backupDir');
+                    tx.oncomplete = () => { idb.close(); resolve(); };
+                    tx.onerror = () => { idb.close(); reject(tx.error); };
+                };
+                req.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        function getStoredDirectoryHandle() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open('fsHandleDB', 1);
+                req.onupgradeneeded = (e) => {
+                    const idb = e.target.result;
+                    if (!idb.objectStoreNames.contains('handles')) idb.createObjectStore('handles');
+                };
+                req.onsuccess = (e) => {
+                    const idb = e.target.result;
+                    const tx = idb.transaction('handles', 'readonly');
+                    const getReq = tx.objectStore('handles').get('backupDir');
+                    getReq.onsuccess = () => { idb.close(); resolve(getReq.result); };
+                    getReq.onerror = () => { idb.close(); resolve(undefined); };
+                };
+                req.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function verifyWritePermission(handle) {
+            if (!handle) return false;
+            // Check for queryPermission API
+            if (handle.queryPermission) {
+                const q = await handle.queryPermission({ mode: 'readwrite' });
+                if (q === 'granted') return true;
+                const req = await handle.requestPermission({ mode: 'readwrite' });
+                return req === 'granted';
+            }
+            // If no permission API, assume writable
+            return true;
+        }
+
+        async function exportData() {
             const data = {
                 entries: entries,
                 trash: trash,
                 lastBackup: new Date().toISOString()
             };
-            
+
+            const filename = getUniqueBackupFilename();
+
+            // If File System Access API is available, try to write directly to chosen folder
+            const supportsFS = 'showDirectoryPicker' in window && 'FileSystemWritableFileStream' in window;
+            if (supportsFS) {
+                try {
+                    let dirHandle = await getStoredDirectoryHandle();
+
+                    if (!dirHandle) {
+                        // Prompt user to pick a directory once
+                        dirHandle = await window.showDirectoryPicker();
+                        // Save for future use
+                        await saveDirectoryHandle(dirHandle);
+                    }
+
+                    // Verify we have write permission, otherwise request it
+                    const ok = await verifyWritePermission(dirHandle);
+                    if (!ok) {
+                        // Ask user to pick again
+                        dirHandle = await window.showDirectoryPicker();
+                        await saveDirectoryHandle(dirHandle);
+                    }
+
+                    const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+                    await writable.close();
+
+                    alert('Backup exported successfully!');
+                    return;
+                } catch (err) {
+                    console.error('File System API write failed, falling back to download. Error:', err);
+                    // fallthrough to fallback download
+                }
+            }
+
+            // Fallback: create a download anchor with a unique filename (ensures not overwriting existing file in browser downloads)
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "expense_manager_backup.json");
+            downloadAnchorNode.setAttribute("download", filename);
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
-            
+
             alert('Backup exported successfully!');
         }
         
+        async function changeBackupDirectory() {
+            if (!('showDirectoryPicker' in window)) {
+                alert('Changing backup folder is not supported in this browser.');
+                return;
+            }
+
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                await saveDirectoryHandle(dirHandle);
+                alert('Backup folder selected and saved successfully.');
+            } catch (err) {
+                console.error('Directory selection cancelled or failed:', err);
+                alert('Directory selection cancelled or failed.');
+            }
+        }
+
         function saveToGoogleDrive() {
             alert('To save to Google Drive:\n1. Click "Export to File" to download your data\n2. Upload the downloaded file to your Google Drive\n\nNote: Direct Google Drive integration requires additional setup.');
         }
@@ -1704,13 +2092,57 @@
                 .filter(entry => entry.type === 'Savings-Withdrawal')
                 .reduce((sum, entry) => sum + entry.amount, 0);
             
+            const loanGiven = entries
+                .filter(entry => entry.type === 'Loan-Given')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanTaken = entries
+                .filter(entry => entry.type === 'Loan-Taken')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanReturned = entries
+                .filter(entry => entry.type === 'Loan-Returned')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const loanReceived = entries
+                .filter(entry => entry.type === 'Loan-Received')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const amanatDeposit = entries
+                .filter(entry => entry.type === 'Amanat')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const amanatWithdrawal = entries
+                .filter(entry => entry.type === 'Amanat-Withdrawal')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            
             const netSavings = savings - savingsWithdrawals;
-            const balance = income - expenses - netSavings;
+            const netLoanAmount = (loanTaken + loanReceived) - (loanGiven + loanReturned);
+            const netAmanat = amanatDeposit - amanatWithdrawal;
+            const balance = income - expenses - netSavings + netLoanAmount + netAmanat;
             
             report += `Total Income: $${income.toFixed(2)}\n`;
             report += `Total Expenses: $${expenses.toFixed(2)}\n`;
             report += `Total Savings: $${netSavings.toFixed(2)}\n`;
-            report += `Remaining Balance: $${balance.toFixed(2)}\n\n`;
+            report += `Net Loan Balance: $${netLoanAmount.toFixed(2)}\n`;
+            report += `Amanat Balance: $${netAmanat.toFixed(2)}\n`;
+            report += `Net Balance: $${balance.toFixed(2)}\n\n`;
+            
+            // Loan Details
+            report += "LOAN DETAILS\n";
+            report += "------------\n";
+            report += `Loans Given: $${loanGiven.toFixed(2)}\n`;
+            report += `Loans Taken: $${loanTaken.toFixed(2)}\n`;
+            report += `Loans Returned: $${loanReturned.toFixed(2)}\n`;
+            report += `Loans Received: $${loanReceived.toFixed(2)}\n`;
+            report += `Net Loan: $${netLoanAmount.toFixed(2)}\n\n`;
+            
+            // Amanat Details
+            report += "AMANAT DETAILS\n";
+            report += "--------------\n";
+            report += `Amanat Deposits: $${amanatDeposit.toFixed(2)}\n`;
+            report += `Amanat Withdrawals: $${amanatWithdrawal.toFixed(2)}\n`;
+            report += `Net Amanat: $${netAmanat.toFixed(2)}\n\n`;
             
             // Category-wise breakdown
             report += "EXPENSE BY MAIN CATEGORY\n";
@@ -1738,8 +2170,10 @@
             
             recentEntries.forEach(entry => {
                 const date = new Date(entry.date).toLocaleDateString();
-                const sign = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' ? '+' : '-';
-                report += `${date} | ${entry.type.padEnd(8)} | ${sign}$${entry.amount.toFixed(2).padStart(10)} | ${entry.mainCategory || '-'} | ${entry.subCategory || '-'} | ${entry.note || ''}\n`;
+                const sign = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
+                            entry.type === 'Loan-Taken' || entry.type === 'Loan-Received' ||
+                            entry.type === 'Amanat-Withdrawal' ? '+' : '-';
+                report += `${date} | ${getDisplayType(entry.type).padEnd(15)} | ${entry.personName ? entry.personName.padEnd(15) : '-'.padEnd(15)} | ${sign}$${entry.amount.toFixed(2).padStart(10)} | ${entry.mainCategory || '-'} | ${entry.subCategory || '-'} | ${entry.note || ''}\n`;
             });
             
             // Monthly breakdown
@@ -1838,15 +2272,18 @@
             lastMonth.setMonth(lastMonth.getMonth() - 1);
             
             entries = [
-                { id: 1, amount: 5000, mainCategory: '', subCategory: 'Salary', type: 'Income', date: today.toISOString().split('T')[0], note: 'Monthly Salary' },
-                { id: 2, amount: 1800, mainCategory: 'Zarooriat', subCategory: 'Home', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Apartment Rent' },
-                { id: 3, amount: 350, mainCategory: 'Zarooriat', subCategory: 'Soft Food', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Groceries' },
-                { id: 4, amount: 250, mainCategory: 'Khwahishat', subCategory: 'Hard Food', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Restaurant' },
-                { id: 5, amount: 150, mainCategory: 'Zarooriat', subCategory: 'Transport', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Gas and Parking' },
-                { id: 6, amount: 200, mainCategory: 'Khwahishat', subCategory: 'Entertainment', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Movies and Dining' },
-                { id: 7, amount: 120, mainCategory: 'Zarooriat', subCategory: 'Health', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Medicines' },
-                { id: 8, amount: 450, mainCategory: 'Khwahishat', subCategory: 'Gadgets', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Phone Accessories' },
-                { id: 9, amount: 1000, mainCategory: '', subCategory: '', type: 'Savings', date: today.toISOString().split('T')[0], note: 'Monthly Savings Deposit' }
+                { id: 1, amount: 5000, mainCategory: '', subCategory: 'Salary', type: 'Income', date: today.toISOString().split('T')[0], note: 'Monthly Salary', personName: '' },
+                { id: 2, amount: 1800, mainCategory: 'Zarooriat', subCategory: 'Home', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Apartment Rent', personName: '' },
+                { id: 3, amount: 350, mainCategory: 'Zarooriat', subCategory: 'Zarooriat', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Groceries', personName: '' },
+                { id: 4, amount: 250, mainCategory: 'Khwahishat', subCategory: 'Khwahishat', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Shopping', personName: '' },
+                { id: 5, amount: 150, mainCategory: 'Zarooriat', subCategory: 'Transport', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Gas and Parking', personName: '' },
+                { id: 6, amount: 200, mainCategory: 'Khwahishat', subCategory: 'Khwahishat', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Entertainment', personName: '' },
+                { id: 7, amount: 120, mainCategory: 'Zarooriat', subCategory: 'Health', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Medicines', personName: '' },
+                { id: 8, amount: 450, mainCategory: 'Seekh', subCategory: 'Seekh', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Books and Courses', personName: '' },
+                { id: 9, amount: 1000, mainCategory: '', subCategory: '', type: 'Savings', date: today.toISOString().split('T')[0], note: 'Monthly Savings Deposit', personName: '' },
+                { id: 10, amount: 500, mainCategory: '', subCategory: '', type: 'Loan-Given', date: today.toISOString().split('T')[0], note: 'Loan to John', personName: 'John Doe' },
+                { id: 11, amount: 300, mainCategory: '', subCategory: '', type: 'Loan-Taken', date: today.toISOString().split('T')[0], note: 'Loan from Alex', personName: 'Alex Smith' },
+                { id: 12, amount: 200, mainCategory: '', subCategory: '', type: 'Amanat', date: today.toISOString().split('T')[0], note: 'Amanat from Sara', personName: 'Sara Khan' }
             ];
             
             saveData();
@@ -1891,10 +2328,14 @@
         document.body.appendChild(fileInput);
 
         document.getElementById("backupBtn").addEventListener("click", function () {
-        document.querySelector(".backup-section").scrollIntoView({
-            behavior: "smooth"
-        });
+            document.querySelector(".backup-section").scrollIntoView({
+                behavior: "smooth"
+            });
         });
     </script>
+    
+    <script src="./Assets/js/chart.js"></script>
+    <script src="./Assets/js/all.min.js"></script>
+
 </body>
 </html>

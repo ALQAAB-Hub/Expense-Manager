@@ -1,12 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Manager</title>
-    <link rel="stylesheet" href="./Assets/css/all.min.css">
+    <title>Cash Manager</title>
     <link rel="icon" href="./July_2025 Kaaj Button/favicon-102x102.png" type="image/png" sizes="102x102">
     <style>
         /* Light Mode Variables (Default) */
@@ -197,6 +194,10 @@
             color: #9d4edd;
         }
 
+        .online-payments-card .value {
+            color: #34a853;
+        }
+
         .form-section, .controls, .entries-section, .trash-section, .backup-section, .chart-container {
             background: var(--light);
             border-radius: var(--border-radius);
@@ -379,6 +380,11 @@
             background-color: rgba(157, 78, 221, 0.15);
             border-left: 4px solid #9d4edd;
         }
+
+        .online-payments-row {
+            background-color: rgba(52, 168, 83, 0.1);
+            border-left: 4px solid #34a853;
+        }
         
         .dark-mode .income-row { background-color: rgba(76, 201, 240, 0.07); }
         .dark-mode .expense-row { background-color: rgba(247, 37, 133, 0.07); }
@@ -386,6 +392,7 @@
         .dark-mode .loan-given-row { background-color: rgba(252, 163, 17, 0.07); }
         .dark-mode .loan-taken-row { background-color: rgba(252, 163, 17, 0.1); }
         .dark-mode .amanat-row { background-color: rgba(157, 78, 221, 0.1); }
+        .dark-mode .online-payments-row { background-color: rgba(52, 168, 83, 0.1); }
 
         .action-cell {
             display: flex;
@@ -471,14 +478,15 @@
         }
 
         .category-salary { background-color: rgba(76, 201, 240, 0.15); color: #4cc9f0; }
-        .category-home { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
-        .category-health { background-color: rgba(67, 97, 238, 0.15); color: #4361ee; }
-        .category-transport { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
+        .category-home-rent { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
+        .category-health-medicine { background-color: rgba(67, 97, 238, 0.15); color: #4361ee; }
+        .category-transport-fuel-bus-careem-bike { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
         .category-other { background-color: rgba(153, 153, 153, 0.15); color: #999; }
         .category-zarooriat { background-color: rgba(76, 201, 240, 0.15); color: #4cc9f0; }
         .category-khwahishat { background-color: rgba(247, 37, 133, 0.15); color: #f72585; }
-        .category-seekh { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
+        .category-self-growth { background-color: rgba(114, 9, 183, 0.15); color: #7209b7; }
         .category-business { background-color: rgba(252, 163, 17, 0.15); color: #fca311; }
+        .category-online-payments { background-color: rgba(52, 168, 83, 0.15); color: #34a853; }
 
         .type-badge {
             padding: 4px 10px;
@@ -493,6 +501,7 @@
         .loan-given-badge { background-color: rgba(252, 163, 17, 0.15); color: #fca311; }
         .loan-taken-badge { background-color: rgba(252, 163, 17, 0.25); color: #fca311; }
         .amanat-badge { background-color: rgba(157, 78, 221, 0.25); color: #9d4edd; }
+        .online-payments-badge { background-color: rgba(52, 168, 83, 0.15); color: #34a853; }
 
         .backup-actions {
             display: flex;
@@ -545,7 +554,6 @@
             cursor: not-allowed;
         }
 
-        /* Updated Footer Styles */
         footer {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
@@ -667,7 +675,7 @@
                           -webkit-background-clip: text;
                           color: transparent;
                           -webkit-text-fill-color: transparent;"></i>
-                <h1>Expense Manager</h1>
+                <h1>Cash Manager</h1>
             </div>
             <div class="header-actions">
                 <button id="resetAll" class="reset-btn">
@@ -694,10 +702,6 @@
                 <h2><i class="fas fa-arrow-up"></i> Total Expenses</h2>
                 <div class="value"><span>$</span><span id="totalExpenses">0.00</span></div>
             </div>
-            <div class="card savings-card">
-                <h2><i class="fas fa-piggy-bank"></i> Total Savings</h2>
-                <div class="value"><span>$</span><span id="totalSavings">0.00</span></div>
-            </div>
             <div class="card loan-card">
                 <h2><i class="fas fa-hand-holding-usd"></i> Net Loan</h2>
                 <div class="value"><span>$</span><span id="netLoan">0.00</span></div>
@@ -705,6 +709,14 @@
             <div class="card amanat-card">
                 <h2><i class="fas fa-shield-alt"></i> Amanat Balance</h2>
                 <div class="value"><span>$</span><span id="amanatBalance">0.00</span></div>
+            </div>
+            <div class="card savings-card">
+                <h2><i class="fas fa-piggy-bank"></i> Total Savings</h2>
+                <div class="value"><span>$</span><span id="totalSavings">0.00</span></div>
+            </div>
+            <div class="card online-payments-card">
+                <h2><i class="fas fa-mobile-alt"></i> Online Payments</h2>
+                <div class="value"><span>$</span><span id="onlinePaymentsBalance">0.00</span></div>
             </div>
             <div class="card balance-card">
                 <h2><i class="fas fa-wallet"></i> Net Balance</h2>
@@ -735,30 +747,22 @@
                             <option value="Amanat-Withdrawal">Amanat Nikasi</option>
                         </select>
                     </div>
-                    <div class="form-group main-category-group">
-                        <label for="mainCategory"><i class="fas fa-layer-group"></i> Main Category</label>
-                        <select id="mainCategory">
-                            <option value="">Category</option>
+                    <div class="form-group category-group">
+                        <label for="categoryGroup"><i class="fas fa-layer-group"></i> Category</label>
+                        <select id="categoryGroup">
+                            <option value="">Select Category</option>
                             <option value="Zarooriat">Zarooriat</option>
                             <option value="Khwahishat">Khwahishat</option>
-                            <option value="Seekh">Seekh</option>
+                            <option value="Self Growth">Self Growth</option>
                             <option value="Business">Business</option>
                             <option value="Achanak">Achanak</option>
+                            <option value="Online Payments">Online Payments</option>
                         </select>
                     </div>
-                    <div class="form-group sub-category-group">
-                        <label for="subCategory"><i class="fas fa-tag"></i> Sub Category</label>
-                        <select id="subCategory">
-                            <option value="">Sub Category</option>
-                            <option value="Zarooriat">Zarooriat</option>
-                            <option value="Khwahishat">Khwahishat</option>
-                            <option value="Seekh">Seekh</option>
-                            <option value="Business">Business</option>
-                            <option value="Home">Home</option>
-                            <option value="Health">Health</option>
-                            <option value="Transport">Transport</option>
-                            <option value="Salary">Salary</option>
-                            <option value="Other">Other</option>
+                    <div class="form-group category-item-group">
+                        <label for="categoryItem"><i class="fas fa-tag"></i> Item</label>
+                        <select id="categoryItem">
+                            <option value="">Select Item</option>
                         </select>
                     </div>
                     <div class="form-group person-name-group" style="display: none;">
@@ -810,9 +814,10 @@
                         <option value="Amanat-Withdrawal">Amanat Nikasi</option>
                         <option value="Zarooriat">Zarooriat</option>
                         <option value="Khwahishat">Khwahishat</option>
-                        <option value="Seekh">Seekh</option>
+                        <option value="Self Growth">Self Growth</option>
                         <option value="Business">Business</option>
                         <option value="Achanak">Achanak</option>
+                        <option value="Online Payments">Online Payments</option>
                     </select>
                 </div>
             </div>
@@ -839,8 +844,8 @@
                             <th>Date</th>
                             <th>Description</th>
                             <th>Person</th>
-                            <th>Main Category</th>
-                            <th>Sub Category</th>
+                            <th>Category</th>
+                            <th>Item</th>
                             <th>Type</th>
                             <th>Amount</th>
                             <th>Actions</th>
@@ -871,9 +876,41 @@
                 </div>
             </div>
             <div class="chart-container">
-                <h2><i class="fas fa-chart-pie"></i> Expense by Category</h2>
+                <h2><i class="fas fa-chart-pie"></i>Main Category</h2>
                 <div class="chart-wrapper">
-                    <canvas id="pieChart"></canvas>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h2><i class="fas fa-list"></i>Category Items</h2>
+                <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center;">
+                    <label for="chartCategorySelect">Main Category:</label>
+                    <select id="chartCategorySelect">
+                        <option value="Zarooriat">Zarooriat</option>
+                        <option value="Khwahishat">Khwahishat</option>
+                        <option value="Self Growth">Self Growth</option>
+                        <option value="Business">Business</option>
+                        <option value="Achanak">Achanak</option>
+                        <option value="Online Payments">Online Payments</option>
+                    </select>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="itemChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h2><i class="fas fa-chart-line"></i> Monthly Category Comparison</h2>
+                <div class="chart-wrapper">
+                    <canvas id="monthlyCategoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="chart-detail-section">
+            <div class="chart-container">
+                <h2><i class="fas fa-boxes"></i> Items Detail (All Items)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="itemsDetailChart"></canvas>
                 </div>
             </div>
         </section>
@@ -903,8 +940,8 @@
                                 <th>Date</th>
                                 <th>Description</th>
                                 <th>Person</th>
-                                <th>Main Category</th>
-                                <th>Sub Category</th>
+                                <th>Category</th>
+                                <th>Item</th>
                                 <th>Type</th>
                                 <th>Amount</th>
                                 <th>Actions</th>
@@ -947,9 +984,10 @@
         <footer>
             <div class="footer-content">
                 <div class="footer-info">
-                    <h3>Expense Manager</h3>
-                    <p>Cash Management System v1.2 (<span id="currentDate">Aug 4, 2025</span>)<br>
-                    ©Copyright 2025 by I.T. Department of ALQAAB Web Studio by ALQAAB Org_Shahbaz Ali</p>
+                    <h3>Cash Manager</h3>
+                    <p>
+                        Cash Management System v2.2 (<span id="currentDate">Mar 21, 2026</span>)<br>©Copyright 2025 by I.T. Department of ALQAAB Tech by ALQAAB-Hub | Shahbaz Ali
+                    </p>
                 </div>
                 <div class="footer-links">
                     <h3>Connect With Us</h3>
@@ -976,7 +1014,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>Designed with ❤️ by ALQAAB Organization</p>
+                <p>Designed with ❤️ by ALQAAB Hub</p>
             </div>
         </footer>
     </div>
@@ -999,6 +1037,18 @@
             "Amanat": "Amanat Jama",
             "Amanat-Withdrawal": "Amanat Nikasi"
         };
+
+        // Populate category items dropdown based on selected main group
+        function populateCategoryItems(group) {
+            categoryItemSelect.innerHTML = '<option value="">Select Item</option>';
+            if (!group || !CATEGORY_ITEMS[group]) return;
+            for (const item of CATEGORY_ITEMS[group]) {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                categoryItemSelect.appendChild(opt);
+            }
+        }
 
         function getDisplayType(type) {
             return typeDisplayMap[type] || type;
@@ -1031,14 +1081,15 @@
         const totalSavings = document.getElementById('totalSavings');
         const netLoan = document.getElementById('netLoan');
         const amanatBalance = document.getElementById('amanatBalance');
+        const onlinePaymentsBalance = document.getElementById('onlinePaymentsBalance');
         const remainingBalance = document.getElementById('remainingBalance');
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
         const startDate = document.getElementById('startDate');
         const endDate = document.getElementById('endDate');
         const filterCategory = document.getElementById('filterCategory');
-        const categorySelect = document.getElementById('mainCategory');
-        const subCategorySelect = document.getElementById('subCategory');
+        const categoryGroupSelect = document.getElementById('categoryGroup');
+        const categoryItemSelect = document.getElementById('categoryItem');
         const typeSelect = document.getElementById('type');
         const personNameInput = document.getElementById('personName');
         const personNameGroup = document.querySelector('.person-name-group');
@@ -1056,7 +1107,66 @@
         const paginationContainer = document.getElementById('paginationContainer');
         
         // Chart variables
-        let barChart, pieChart;
+        let barChart, categoryChart, itemChart, monthlyCategoryChart, itemsDetailChart;
+
+        // CATEGORY ITEMS (strict grouping provided by user)
+        const CATEGORY_ITEMS = {
+            "Khwahishat": [
+                'Eating Out',
+                'Shopping',
+                'Entertainment (Movies, Netflix, Games)',
+                'Travel / Picnic',
+                'Gifts'
+            ],
+            "Zarooriat": [
+                'Home / Rent',
+                'Bijli, Pani, Gas',
+                'Rashan (Groceries)',
+                'Transport (Fuel, Bus, Careem, Bike)',
+                'Health / Medicine'
+            ],
+            "Self Growth": [
+                'Courses',
+                'Books',
+                'Coaching / Tuition',
+                'Online Subscriptions (Udemy, Coursera)'
+            ],
+            "Business": [
+                'Investment',
+                'Tools / Software',
+                'Marketing',
+                'Office Expense'
+            ],
+            "Achanak": [
+                'Medical Emergency',
+                'Repair (Mobile, Bike, Home)',
+                'Fine / Unexpected Payment'
+            ],
+            "Online Payments": [
+                'JazzCash',
+                'Easypaisa',
+                'NayaPay',
+                'SadaPay',
+                'Faysal Bank'
+            ]
+        };
+
+        // Main category colors (Khwahishat set to black as requested)
+        const MAIN_CATEGORY_COLORS = {
+            'Zarooriat': '#fca311',
+            'Khwahishat': '#000000',
+            'Self Growth': '#7209b7',
+            'Business': '#4361ee',
+            'Achanak': '#f72585',
+            'Online Payments': '#34a853'
+        };
+
+        function getColorForLabel(label) {
+            for (const group in CATEGORY_ITEMS) {
+                if (CATEGORY_ITEMS[group].includes(label)) return MAIN_CATEGORY_COLORS[group] || '#cccccc';
+            }
+            return null;
+        }
         
         // Initialize IndexedDB
         function initDB() {
@@ -1233,6 +1343,8 @@
             
             // Set up event listeners
             setupEventListeners();
+            // Populate category items for current selection (if any)
+            populateCategoryItems(categoryGroupSelect.value);
             
             // Add sample data for first-time users if no data exists
             if (entries.length === 0 && trash.length === 0) {
@@ -1258,33 +1370,38 @@
                     '<i class="fas fa-chevron-down"></i> Show Trash';
             });
             
-            // Type change handling - FIXED: Person Name field only shows for loan/amanat
+            // Type change handling - show category fields for Income so user can select Online Payments
             typeSelect.addEventListener('change', function() {
-                const mainCategoryGroup = document.querySelector('.main-category-group');
-                const subCategoryGroup = document.querySelector('.sub-category-group');
-                
+                const categoryGroupGroup = document.querySelector('.category-group');
+                const categoryItemGroup = document.querySelector('.category-item-group');
+
                 if (this.value === 'Income') {
-                    mainCategoryGroup.style.display = 'none';
-                    subCategoryGroup.style.display = 'block';
-                    subCategorySelect.value = 'Salary';
-                    categorySelect.value = '';
+                    // Show category fields to allow selection of Online Payments or other categories
+                    categoryGroupGroup.style.display = 'block';
+                    categoryItemGroup.style.display = 'block';
                     personNameGroup.style.display = 'none';
                 } else if (this.value === 'Savings' || this.value === 'Savings-Withdrawal') {
-                    mainCategoryGroup.style.display = 'none';
-                    subCategoryGroup.style.display = 'none';
-                    subCategorySelect.value = '';
-                    categorySelect.value = '';
+                    categoryGroupGroup.style.display = 'none';
+                    categoryItemGroup.style.display = 'none';
                     personNameGroup.style.display = 'none';
                 } else if (this.value.includes('Loan') || this.value.includes('Amanat')) {
-                    mainCategoryGroup.style.display = 'none';
-                    subCategoryGroup.style.display = 'none';
-                    subCategorySelect.value = '';
-                    categorySelect.value = '';
+                    categoryGroupGroup.style.display = 'none';
+                    categoryItemGroup.style.display = 'none';
                     personNameGroup.style.display = 'block';
                 } else {
-                    mainCategoryGroup.style.display = 'block';
-                    subCategoryGroup.style.display = 'block';
+                    categoryGroupGroup.style.display = 'block';
+                    categoryItemGroup.style.display = 'block';
                     personNameGroup.style.display = 'none';
+                }
+            });
+            
+            // Category group change: populate items and also handle Income visibility
+            categoryGroupSelect.addEventListener('change', function() {
+                populateCategoryItems(this.value);
+                // If type is Income and this category is selected, ensure fields are visible
+                if (typeSelect.value === 'Income') {
+                    document.querySelector('.category-group').style.display = 'block';
+                    document.querySelector('.category-item-group').style.display = 'block';
                 }
             });
             
@@ -1384,8 +1501,8 @@
             e.preventDefault();
             
             const amount = parseFloat(document.getElementById('amount').value);
-            const mainCategory = document.getElementById('mainCategory').value;
-            const subCategory = document.getElementById('subCategory').value;
+            const categoryGroup = document.getElementById('categoryGroup').value;
+            const categoryItem = document.getElementById('categoryItem').value;
             const type = document.getElementById('type').value;
             const date = document.getElementById('date').value;
             const note = document.getElementById('note').value;
@@ -1401,6 +1518,22 @@
                 return;
             }
             
+            let finalCategoryGroup = categoryGroup;
+            let finalCategoryItem = categoryItem;
+            if (type === 'Income') {
+                if (categoryGroup === 'Online Payments') {
+                    finalCategoryGroup = 'Online Payments';
+                    finalCategoryItem = categoryItem;
+                } else {
+                    // Regular income (like salary) - no category group, item set to Salary
+                    finalCategoryGroup = '';
+                    finalCategoryItem = 'Salary';
+                }
+            } else if (type === 'Savings' || type === 'Savings-Withdrawal' || type.includes('Loan') || type.includes('Amanat')) {
+                finalCategoryGroup = '';
+                finalCategoryItem = '';
+            }
+            
             if (editingId !== null) {
                 // Update existing entry
                 entries = entries.map(entry => {
@@ -1408,8 +1541,8 @@
                         return {
                             ...entry,
                             amount,
-                            mainCategory: type === 'Income' || type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : mainCategory,
-                            subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : subCategory),
+                            categoryGroup: finalCategoryGroup,
+                            categoryItem: finalCategoryItem,
                             type,
                             date,
                             note,
@@ -1426,8 +1559,8 @@
                 const newEntry = {
                     id: Date.now(),
                     amount,
-                    mainCategory: type === 'Income' || type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : mainCategory,
-                    subCategory: type === 'Income' ? 'Salary' : (type.includes('Savings') || type.includes('Loan') || type.includes('Amanat') ? '' : subCategory),
+                    categoryGroup: finalCategoryGroup,
+                    categoryItem: finalCategoryItem,
                     type,
                     date,
                     note,
@@ -1444,11 +1577,12 @@
             entryForm.reset();
             document.getElementById('date').value = new Date().toISOString().split('T')[0];
             typeSelect.value = 'Expense';
-            
-            // Reset category fields display
-            document.querySelector('.main-category-group').style.display = 'block';
-            document.querySelector('.sub-category-group').style.display = 'block';
+            categoryGroupSelect.value = '';
+            categoryItemSelect.innerHTML = '<option value="">Select Item</option>';
             personNameGroup.style.display = 'none';
+            // Reset category fields visibility based on type (now Expense)
+            document.querySelector('.category-group').style.display = 'block';
+            document.querySelector('.category-item-group').style.display = 'block';
             
             // Update UI
             updateDashboard();
@@ -1500,13 +1634,25 @@
             const netSavings = savings - savingsWithdrawals;
             const netLoanAmount = (loanTaken + loanReceived) - (loanGiven + loanReturned);
             const netAmanat = amanatDeposit - amanatWithdrawal;
-            const balance = income - expenses - netSavings + netLoanAmount + netAmanat;
+            
+            // Online Payments net balance (Income - Expense within Online Payments category)
+            const onlinePaymentsIncome = entries
+                .filter(entry => entry.type === 'Income' && entry.categoryGroup === 'Online Payments')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            const onlinePaymentsExpense = entries
+                .filter(entry => entry.type === 'Expense' && entry.categoryGroup === 'Online Payments')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            const netOnlinePayments = onlinePaymentsIncome - onlinePaymentsExpense;
+            
+            // Net Balance: Income - Expenses - NetSavings + NetLoan  (Amanat is excluded)
+            const balance = income - expenses - netSavings + netLoanAmount;
             
             totalIncome.textContent = income.toFixed(2);
             totalExpenses.textContent = expenses.toFixed(2);
             totalSavings.textContent = netSavings.toFixed(2);
             netLoan.textContent = netLoanAmount.toFixed(2);
             amanatBalance.textContent = netAmanat.toFixed(2);
+            onlinePaymentsBalance.textContent = netOnlinePayments.toFixed(2);
             remainingBalance.textContent = balance.toFixed(2);
         }
         
@@ -1521,13 +1667,13 @@
                 const matchesSearch = !searchTerm || 
                     (entry.note && entry.note.toLowerCase().includes(searchTerm)) ||
                     (entry.personName && entry.personName.toLowerCase().includes(searchTerm)) ||
-                    entry.mainCategory.toLowerCase().includes(searchTerm) ||
-                    entry.subCategory.toLowerCase().includes(searchTerm);
+                    (entry.categoryGroup || '').toLowerCase().includes(searchTerm) ||
+                    (entry.categoryItem || '').toLowerCase().includes(searchTerm);
                 
                 const matchesCategory = !categoryFilter || 
                     entry.type === categoryFilter ||
-                    entry.mainCategory === categoryFilter ||
-                    entry.subCategory === categoryFilter;
+                    entry.categoryGroup === categoryFilter ||
+                    entry.categoryItem === categoryFilter;
                 
                 const matchesDate = (!startDateFilter || entry.date >= startDateFilter) && 
                                   (!endDateFilter || entry.date <= endDateFilter);
@@ -1566,6 +1712,8 @@
                     typeClass = 'loan-taken';
                 } else if (entry.type === 'Amanat' || entry.type === 'Amanat-Withdrawal') {
                     typeClass = 'amanat';
+                } else if (entry.categoryGroup === 'Online Payments') {
+                    typeClass = 'online-payments';
                 }
                 
                 const isPositive = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
@@ -1578,8 +1726,8 @@
                     <td>${formatDate(entry.date)}</td>
                     <td>${entry.note || 'No description'}</td>
                     <td>${entry.personName || '-'}</td>
-                    <td>${entry.mainCategory ? `<span class="main-category">${entry.mainCategory}</span>` : '-'}</td>
-                    <td>${entry.subCategory ? `<span class="entry-category category-${entry.subCategory.toLowerCase().replace(' ', '-')}">${entry.subCategory}</span>` : '-'}</td>
+                    <td>${entry.categoryGroup ? `<span class="main-category">${entry.categoryGroup}</span>` : '-'}</td>
+                    <td>${entry.categoryItem ? `<span class="entry-category category-${(entry.categoryItem || '').toLowerCase().replace(/ /g, '-').replace(/\//g,'').replace(/,/g,'')}">${entry.categoryItem}</span>` : '-'}</td>
                     <td><span class="type-badge ${typeClass}-badge">${getDisplayType(entry.type)}</span></td>
                     <td class="${isPositive ? 'income' : 'expense'}">
                         ${isPositive ? '+' : '-'}$${entry.amount.toFixed(2)}
@@ -1664,6 +1812,8 @@
                     typeClass = 'loan-taken';
                 } else if (entry.type === 'Amanat' || entry.type === 'Amanat-Withdrawal') {
                     typeClass = 'amanat';
+                } else if (entry.categoryGroup === 'Online Payments') {
+                    typeClass = 'online-payments';
                 }
                 
                 const isPositive = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
@@ -1676,8 +1826,8 @@
                     <td>${formatDate(entry.date)}</td>
                     <td>${entry.note || 'No description'}</td>
                     <td>${entry.personName || '-'}</td>
-                    <td>${entry.mainCategory ? `<span class="main-category">${entry.mainCategory}</span>` : '-'}</td>
-                    <td>${entry.subCategory ? `<span class="entry-category category-${entry.subCategory.toLowerCase().replace(' ', '-')}">${entry.subCategory}</span>` : '-'}</td>
+                    <td>${entry.categoryGroup ? `<span class="main-category">${entry.categoryGroup}</span>` : '-'}</td>
+                    <td>${entry.categoryItem ? `<span class="entry-category category-${(entry.categoryItem || '').toLowerCase().replace(/ /g, '-').replace(/\//g,'').replace(/,/g,'')}">${entry.categoryItem}</span>` : '-'}</td>
                     <td><span class="type-badge ${typeClass}-badge">${getDisplayType(entry.type)}</span></td>
                     <td class="${isPositive ? 'income' : 'expense'}">
                         ${isPositive ? '+' : '-'}$${entry.amount.toFixed(2)}
@@ -1708,32 +1858,35 @@
             
             // Populate form
             document.getElementById('amount').value = entry.amount;
-            document.getElementById('mainCategory').value = entry.mainCategory || '';
-            document.getElementById('subCategory').value = entry.subCategory || '';
+            document.getElementById('categoryGroup').value = entry.categoryGroup || '';
+            // Populate items for the selected group then set value
+            populateCategoryItems(entry.categoryGroup);
+            document.getElementById('categoryItem').value = entry.categoryItem || '';
             document.getElementById('type').value = entry.type;
             document.getElementById('date').value = entry.date;
             document.getElementById('note').value = entry.note || '';
             document.getElementById('personName').value = entry.personName || '';
             
             // Adjust category fields display based on type
-            const mainCategoryGroup = document.querySelector('.main-category-group');
-            const subCategoryGroup = document.querySelector('.sub-category-group');
+            const categoryGroupGroup = document.querySelector('.category-group');
+            const categoryItemGroup = document.querySelector('.category-item-group');
             
             if (entry.type === 'Income') {
-                mainCategoryGroup.style.display = 'none';
-                subCategoryGroup.style.display = 'block';
+                // Show category fields so user can edit Online Payments category if needed
+                categoryGroupGroup.style.display = 'block';
+                categoryItemGroup.style.display = 'block';
                 personNameGroup.style.display = 'none';
             } else if (entry.type === 'Savings' || entry.type === 'Savings-Withdrawal') {
-                mainCategoryGroup.style.display = 'none';
-                subCategoryGroup.style.display = 'none';
+                categoryGroupGroup.style.display = 'none';
+                categoryItemGroup.style.display = 'none';
                 personNameGroup.style.display = 'none';
             } else if (entry.type.includes('Loan') || entry.type.includes('Amanat')) {
-                mainCategoryGroup.style.display = 'none';
-                subCategoryGroup.style.display = 'none';
+                categoryGroupGroup.style.display = 'none';
+                categoryItemGroup.style.display = 'none';
                 personNameGroup.style.display = 'block';
             } else {
-                mainCategoryGroup.style.display = 'block';
-                subCategoryGroup.style.display = 'block';
+                categoryGroupGroup.style.display = 'block';
+                categoryItemGroup.style.display = 'block';
                 personNameGroup.style.display = 'none';
             }
             
@@ -1792,7 +1945,10 @@
         function initCharts() {
             // Destroy existing charts if they exist
             if (barChart) barChart.destroy();
-            if (pieChart) pieChart.destroy();
+            if (categoryChart) categoryChart.destroy();
+            if (itemChart) itemChart.destroy();
+            if (monthlyCategoryChart) monthlyCategoryChart.destroy();
+            if (itemsDetailChart) itemsDetailChart.destroy();
             
             const isDarkMode = document.body.classList.contains('dark-mode');
             const textColor = isDarkMode ? '#f0f0f0' : '#212529';
@@ -1801,8 +1957,8 @@
             // Prepare data for charts
             const monthlyData = getMonthlyData();
             const categoryData = getCategoryData();
-            
-            // Create bar chart for monthly spending
+
+            // Create bar chart for monthly spending (unchanged)
             const barCtx = document.getElementById('barChart').getContext('2d');
             barChart = new Chart(barCtx, {
                 type: 'bar',
@@ -1846,19 +2002,16 @@
                     }
                 }
             });
-            
-            // Create pie chart for category spending
-            const pieCtx = document.getElementById('pieChart').getContext('2d');
-            pieChart = new Chart(pieCtx, {
+
+            // Create doughnut chart for main category spending
+            const catCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(catCtx, {
                 type: 'doughnut',
                 data: {
                     labels: categoryData.labels,
                     datasets: [{
                         data: categoryData.data,
-                        backgroundColor: [
-                            '#fca311', '#e85d04', '#7209b7', '#4361ee', 
-                            '#f72585', '#9d4edd', '#2d9cdb', '#6c757d'
-                        ],
+                        backgroundColor: categoryData.labels.map(l => MAIN_CATEGORY_COLORS[l] || '#cccccc'),
                         borderWidth: 2,
                         borderColor: isDarkMode ? '#1e1e1e' : '#f8f9fa',
                         hoverOffset: 15
@@ -1882,6 +2035,102 @@
                     }
                 }
             });
+
+            // Create item breakdown chart for selected category
+            const chartCategorySelect = document.getElementById('chartCategorySelect');
+
+            // Restore previously selected category from localStorage if available
+            try {
+                const saved = localStorage.getItem('selectedChartCategory');
+                if (chartCategorySelect && saved) {
+                    const exists = Array.from(chartCategorySelect.options).some(o => o.value === saved);
+                    if (exists) chartCategorySelect.value = saved;
+                }
+            } catch (e) { /* ignore localStorage errors */ }
+
+            const selectedCategory = chartCategorySelect?.value || categoryData.labels[0];
+            const itemData = getItemData(selectedCategory);
+            const itemCtx = document.getElementById('itemChart').getContext('2d');
+            itemChart = new Chart(itemCtx, {
+                type: 'bar',
+                data: {
+                    labels: itemData.labels,
+                    datasets: [{
+                        label: selectedCategory + ' - Items',
+                        data: itemData.data,
+                        backgroundColor: itemData.labels.map(l => getColorForLabel(l) || MAIN_CATEGORY_COLORS[selectedCategory] || '#4361ee')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, callback: v => '$' + v } },
+                        x: { ticks: { color: textColor } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Monthly category comparison chart (lines per main category)
+            const monthlyCatData = getMonthlyCategoryComparisonData();
+            const monthlyCtx = document.getElementById('monthlyCategoryChart').getContext('2d');
+            monthlyCategoryChart = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyCatData.labels,
+                    datasets: monthlyCatData.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, callback: v => '$' + v } },
+                        x: { ticks: { color: textColor } }
+                    },
+                    plugins: { legend: { labels: { color: textColor } } }
+                }
+            });
+
+            // Wire the chart category selector to update item chart and persist selection
+            if (chartCategorySelect) {
+                chartCategorySelect.addEventListener('change', function() {
+                    const d = getItemData(this.value);
+                    itemChart.data.labels = d.labels;
+                    itemChart.data.datasets[0].data = d.data;
+                    itemChart.data.datasets[0].label = this.value + ' - Items';
+                    itemChart.data.datasets[0].backgroundColor = d.labels.map(l => getColorForLabel(l) || MAIN_CATEGORY_COLORS[this.value] || '#4361ee');
+                    itemChart.update();
+                    try { localStorage.setItem('selectedChartCategory', this.value); } catch (e) { /* ignore */ }
+                });
+            }
+
+            // Create full-width Items Detail chart (all items across categories)
+            const allItems = getAllItemsData();
+            const itemsCtxEl = document.getElementById('itemsDetailChart');
+            if (itemsCtxEl) {
+                const itemsCtx = itemsCtxEl.getContext('2d');
+                itemsDetailChart = new Chart(itemsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: allItems.labels,
+                        datasets: [{
+                            label: 'Items Detail',
+                            data: allItems.data,
+                            backgroundColor: allItems.labels.map(l => getColorForLabel(l) || '#6a4c93')
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, callback: v => '$' + v } },
+                            x: { ticks: { color: textColor } }
+                        },
+                        plugins: { legend: { labels: { color: textColor } } }
+                    }
+                });
+            }
         }
         
         function getMonthlyData() {
@@ -1914,19 +2163,96 @@
         }
         
         function getCategoryData() {
-            const categories = ['Zarooriat', 'Khwahishat', 'Seekh', 'Business', 'Achanak'];
+            const categories = ['Zarooriat', 'Khwahishat', 'Self Growth', 'Business', 'Achanak', 'Online Payments'];
             const data = new Array(categories.length).fill(0);
             
             entries
-                .filter(entry => entry.type === 'Expense' && entry.mainCategory)
+                .filter(entry => entry.type === 'Expense' && entry.categoryGroup)
                 .forEach(entry => {
-                    const index = categories.indexOf(entry.mainCategory);
+                    const index = categories.indexOf(entry.categoryGroup);
                     if (index !== -1) {
                         data[index] += entry.amount;
                     }
                 });
             
             return { labels: categories, data };
+        }
+
+        function getItemData(group) {
+            const items = CATEGORY_ITEMS[group] || [];
+            const data = items.map(_ => 0);
+
+            entries
+                .filter(entry => entry.type === 'Expense' && entry.categoryGroup === group && entry.categoryItem)
+                .forEach(entry => {
+                    const idx = items.indexOf(entry.categoryItem);
+                    if (idx !== -1) data[idx] += entry.amount;
+                });
+                
+            // Also include Income entries for Online Payments category if group is Online Payments
+            if (group === 'Online Payments') {
+                entries
+                    .filter(entry => entry.type === 'Income' && entry.categoryGroup === group && entry.categoryItem)
+                    .forEach(entry => {
+                        const idx = items.indexOf(entry.categoryItem);
+                        if (idx !== -1) data[idx] += entry.amount;
+                    });
+            }
+
+            return { labels: items, data };
+        }
+
+        function getAllItemsData() {
+            const labels = [];
+            const data = [];
+
+            for (const group in CATEGORY_ITEMS) {
+                const items = CATEGORY_ITEMS[group];
+                for (const it of items) {
+                    labels.push(it);
+                    data.push(0);
+                }
+            }
+
+            entries
+                .filter(entry => (entry.type === 'Expense' || (entry.type === 'Income' && entry.categoryGroup === 'Online Payments')) && entry.categoryItem)
+                .forEach(entry => {
+                    const idx = labels.indexOf(entry.categoryItem);
+                    if (idx !== -1) data[idx] += entry.amount;
+                });
+
+            return { labels, data };
+        }
+
+        function getMonthlyCategoryComparisonData() {
+            const now = new Date();
+            const months = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push(d.toLocaleString('default', { month: 'short', year: 'numeric' }));
+            }
+
+            const categories = ['Zarooriat', 'Khwahishat', 'Self Growth', 'Business', 'Achanak', 'Online Payments'];
+            const datasets = categories.map((cat, idx) => ({
+                label: cat,
+                data: new Array(6).fill(0),
+                borderColor: MAIN_CATEGORY_COLORS[cat] || '#cccccc',
+                backgroundColor: 'transparent',
+                tension: 0.2
+            }));
+
+            entries.forEach(entry => {
+                if ((entry.type !== 'Expense' && !(entry.type === 'Income' && entry.categoryGroup === 'Online Payments')) || !entry.categoryGroup) return;
+                const entryDate = new Date(entry.date);
+                const monthDiff = (now.getMonth() - entryDate.getMonth()) + (12 * (now.getFullYear() - entryDate.getFullYear()));
+                if (monthDiff >= 0 && monthDiff < 6) {
+                    const index = 5 - monthDiff;
+                    const catIndex = categories.indexOf(entry.categoryGroup);
+                    if (catIndex !== -1) datasets[catIndex].data[index] += entry.amount;
+                }
+            });
+
+            return { labels: months, datasets };
         }
         
         // Helper: generate a unique filename for each backup
@@ -2068,7 +2394,7 @@
         }
         
         function generateTextReport() {
-            let report = "EXPENSE MANAGER - FINANCIAL REPORT\n";
+            let report = "Cash MANAGER - FINANCIAL REPORT\n";
             report += "=====================================\n\n";
             report += `Generated: ${new Date().toLocaleString()}\n\n`;
             
@@ -2119,13 +2445,23 @@
             const netSavings = savings - savingsWithdrawals;
             const netLoanAmount = (loanTaken + loanReceived) - (loanGiven + loanReturned);
             const netAmanat = amanatDeposit - amanatWithdrawal;
-            const balance = income - expenses - netSavings + netLoanAmount + netAmanat;
+            
+            const onlinePaymentsIncome = entries
+                .filter(entry => entry.type === 'Income' && entry.categoryGroup === 'Online Payments')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            const onlinePaymentsExpense = entries
+                .filter(entry => entry.type === 'Expense' && entry.categoryGroup === 'Online Payments')
+                .reduce((sum, entry) => sum + entry.amount, 0);
+            const netOnlinePayments = onlinePaymentsIncome - onlinePaymentsExpense;
+            
+            const balance = income - expenses - netSavings + netLoanAmount;
             
             report += `Total Income: $${income.toFixed(2)}\n`;
             report += `Total Expenses: $${expenses.toFixed(2)}\n`;
             report += `Total Savings: $${netSavings.toFixed(2)}\n`;
             report += `Net Loan Balance: $${netLoanAmount.toFixed(2)}\n`;
             report += `Amanat Balance: $${netAmanat.toFixed(2)}\n`;
+            report += `Online Payments Net: $${netOnlinePayments.toFixed(2)}\n`;
             report += `Net Balance: $${balance.toFixed(2)}\n\n`;
             
             // Loan Details
@@ -2148,10 +2484,10 @@
             report += "EXPENSE BY MAIN CATEGORY\n";
             report += "------------------------\n";
             
-            const mainCategories = ['Zarooriat', 'Khwahishat', 'Seekh', 'Business', 'Achanak'];
+            const mainCategories = ['Zarooriat', 'Khwahishat', 'Self Growth', 'Business', 'Achanak', 'Online Payments'];
             mainCategories.forEach(category => {
                 const total = entries
-                    .filter(entry => entry.type === 'Expense' && entry.mainCategory === category)
+                    .filter(entry => entry.type === 'Expense' && entry.categoryGroup === category)
                     .reduce((sum, entry) => sum + entry.amount, 0);
                 
                 if (total > 0) {
@@ -2173,7 +2509,7 @@
                 const sign = entry.type === 'Income' || entry.type === 'Savings-Withdrawal' || 
                             entry.type === 'Loan-Taken' || entry.type === 'Loan-Received' ||
                             entry.type === 'Amanat-Withdrawal' ? '+' : '-';
-                report += `${date} | ${getDisplayType(entry.type).padEnd(15)} | ${entry.personName ? entry.personName.padEnd(15) : '-'.padEnd(15)} | ${sign}$${entry.amount.toFixed(2).padStart(10)} | ${entry.mainCategory || '-'} | ${entry.subCategory || '-'} | ${entry.note || ''}\n`;
+                report += `${date} | ${getDisplayType(entry.type).padEnd(15)} | ${entry.personName ? entry.personName.padEnd(15) : '-'.padEnd(15)} | ${sign}$${entry.amount.toFixed(2).padStart(10)} | ${entry.categoryGroup || '-'} | ${entry.categoryItem || '-'} | ${entry.note || ''}\n`;
             });
             
             // Monthly breakdown
@@ -2272,18 +2608,20 @@
             lastMonth.setMonth(lastMonth.getMonth() - 1);
             
             entries = [
-                { id: 1, amount: 5000, mainCategory: '', subCategory: 'Salary', type: 'Income', date: today.toISOString().split('T')[0], note: 'Monthly Salary', personName: '' },
-                { id: 2, amount: 1800, mainCategory: 'Zarooriat', subCategory: 'Home', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Apartment Rent', personName: '' },
-                { id: 3, amount: 350, mainCategory: 'Zarooriat', subCategory: 'Zarooriat', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Groceries', personName: '' },
-                { id: 4, amount: 250, mainCategory: 'Khwahishat', subCategory: 'Khwahishat', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Shopping', personName: '' },
-                { id: 5, amount: 150, mainCategory: 'Zarooriat', subCategory: 'Transport', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Gas and Parking', personName: '' },
-                { id: 6, amount: 200, mainCategory: 'Khwahishat', subCategory: 'Khwahishat', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Entertainment', personName: '' },
-                { id: 7, amount: 120, mainCategory: 'Zarooriat', subCategory: 'Health', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Medicines', personName: '' },
-                { id: 8, amount: 450, mainCategory: 'Seekh', subCategory: 'Seekh', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Books and Courses', personName: '' },
-                { id: 9, amount: 1000, mainCategory: '', subCategory: '', type: 'Savings', date: today.toISOString().split('T')[0], note: 'Monthly Savings Deposit', personName: '' },
-                { id: 10, amount: 500, mainCategory: '', subCategory: '', type: 'Loan-Given', date: today.toISOString().split('T')[0], note: 'Loan to John', personName: 'John Doe' },
-                { id: 11, amount: 300, mainCategory: '', subCategory: '', type: 'Loan-Taken', date: today.toISOString().split('T')[0], note: 'Loan from Alex', personName: 'Alex Smith' },
-                { id: 12, amount: 200, mainCategory: '', subCategory: '', type: 'Amanat', date: today.toISOString().split('T')[0], note: 'Amanat from Sara', personName: 'Sara Khan' }
+                { id: 1, amount: 5000, categoryGroup: '', categoryItem: 'Salary', type: 'Income', date: today.toISOString().split('T')[0], note: 'Monthly Salary', personName: '' },
+                { id: 2, amount: 1800, categoryGroup: 'Zarooriat', categoryItem: 'Home / Rent', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Apartment Rent', personName: '' },
+                { id: 3, amount: 350, categoryGroup: 'Zarooriat', categoryItem: 'Rashan (Groceries)', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Groceries', personName: '' },
+                { id: 4, amount: 250, categoryGroup: 'Khwahishat', categoryItem: 'Shopping', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Shopping', personName: '' },
+                { id: 5, amount: 150, categoryGroup: 'Zarooriat', categoryItem: 'Transport (Fuel, Bus, Careem, Bike)', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Gas and Parking', personName: '' },
+                { id: 6, amount: 200, categoryGroup: 'Khwahishat', categoryItem: 'Entertainment (Movies, Netflix, Games)', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Entertainment', personName: '' },
+                { id: 7, amount: 120, categoryGroup: 'Zarooriat', categoryItem: 'Health / Medicine', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Medicines', personName: '' },
+                { id: 8, amount: 450, categoryGroup: 'Self Growth', categoryItem: 'Books', type: 'Expense', date: lastMonth.toISOString().split('T')[0], note: 'Books purchase', personName: '' },
+                { id: 9, amount: 1000, categoryGroup: '', categoryItem: '', type: 'Savings', date: today.toISOString().split('T')[0], note: 'Monthly Savings Deposit', personName: '' },
+                { id: 10, amount: 500, categoryGroup: '', categoryItem: '', type: 'Loan-Given', date: today.toISOString().split('T')[0], note: 'Loan to John', personName: 'John Doe' },
+                { id: 11, amount: 300, categoryGroup: '', categoryItem: '', type: 'Loan-Taken', date: today.toISOString().split('T')[0], note: 'Loan from Alex', personName: 'Alex Smith' },
+                { id: 12, amount: 200, categoryGroup: '', categoryItem: '', type: 'Amanat', date: today.toISOString().split('T')[0], note: 'Amanat from Sara', personName: 'Sara Khan' },
+                { id: 13, amount: 75, categoryGroup: 'Online Payments', categoryItem: 'JazzCash', type: 'Expense', date: today.toISOString().split('T')[0], note: 'Mobile recharge', personName: '' },
+                { id: 14, amount: 150, categoryGroup: 'Online Payments', categoryItem: 'Easypaisa', type: 'Income', date: today.toISOString().split('T')[0], note: 'Received payment', personName: '' }
             ];
             
             saveData();
@@ -2302,23 +2640,75 @@
         fileInput.addEventListener('change', async function(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
+
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.entries && data.trash) {
-                        entries = data.entries;
-                        trash = data.trash;
-                        await saveData();
-                        updateDashboard();
-                        renderEntries();
-                        renderTrash();
-                        initCharts();
-                        alert('Data imported successfully!');
+
+                    // Helper to map various backup formats into current entry shape
+                    function mapImportedEntry(en) {
+                        const id = en.id || (Date.now() + Math.floor(Math.random() * 1000));
+                        const amount = typeof en.amount === 'string' ? parseFloat(en.amount) : (en.amount || 0);
+                        const categoryGroup = en.categoryGroup ?? en.mainCategory ?? en.main_category ?? '';
+                        const categoryItem = en.categoryItem ?? en.subCategory ?? en.sub_category ?? '';
+                        const type = en.type || 'Expense';
+                        const date = en.date || new Date().toISOString().split('T')[0];
+                        const note = en.note || '';
+                        const personName = en.personName ?? en.person ?? '';
+
+                        return {
+                            id,
+                            amount,
+                            categoryGroup,
+                            categoryItem,
+                            type,
+                            date,
+                            note,
+                            personName
+                        };
+                    }
+
+                    let importedEntries = [];
+                    let importedTrash = [];
+
+                    if (Array.isArray(data.entries)) {
+                        importedEntries = data.entries.map(mapImportedEntry);
+                        if (Array.isArray(data.trash)) importedTrash = data.trash.map(mapImportedEntry);
+                    } else if (Array.isArray(data)) {
+                        // Some backups might be a raw array of entries
+                        importedEntries = data.map(mapImportedEntry);
+                    } else if (Array.isArray(data.backup) && data.backup.length) {
+                        importedEntries = data.backup.map(mapImportedEntry);
                     } else {
                         alert('Invalid backup file format.');
+                        return;
                     }
+
+                    // Merge into existing entries/trash, avoiding simple ID collisions
+                    const existingIds = new Set(entries.map(en => en.id));
+                    for (const im of importedEntries) {
+                        if (!existingIds.has(im.id)) {
+                            entries.push(im);
+                            existingIds.add(im.id);
+                        } else {
+                            // assign a fresh id to avoid overwrite
+                            im.id = Date.now() + Math.floor(Math.random() * 100000) + Math.floor(Math.random() * 1000);
+                            entries.push(im);
+                        }
+                    }
+
+                    const existingTrashIds = new Set(trash.map(t => t.id));
+                    for (const imt of importedTrash) {
+                        if (!existingTrashIds.has(imt.id)) trash.push(imt);
+                    }
+
+                    await saveData();
+                    updateDashboard();
+                    renderEntries();
+                    renderTrash();
+                    initCharts();
+                    alert('Data imported successfully!');
                 } catch (error) {
                     alert('Error reading backup file: ' + error.message);
                 }

@@ -15,93 +15,201 @@
     <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, doc, setDoc, getDocs, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, query, where, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
-  apiKey: "AIzaSyAKrCNF_RUogz7xjFAM0GAB6_noaAdN6Gc",
-  authDomain: "cash-manager-web.firebaseapp.com",
-  projectId: "cash-manager-web",
-  storageBucket: "cash-manager-web.firebasestorage.app",
-  messagingSenderId: "824130165214",
-  appId: "1:824130165214:web:7be9ea0c20589d6f28a54f"
-};
+    apiKey: "AIzaSyAKrCNF_RUogz7xjFAM0GAB6_noaAdN6Gc",
+    authDomain: "cash-manager-web.firebaseapp.com",
+    projectId: "cash-manager-web",
+    storageBucket: "cash-manager-web.firebasestorage.app",
+    messagingSenderId: "824130165214",
+    appId: "1:824130165214:web:7be9ea0c20589d6f28a54f"
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Attach for other scripts if needed
   window.firebaseAuth = auth;
   window.firebaseDb = db;
   window.signInWithGoogle = () => signInWithPopup(auth, new GoogleAuthProvider());
   window.signOutFirebase = () => signOut(auth);
-  window.firestoreCollection = collection;
-  window.firestoreDoc = doc;
-  window.firestoreSetDoc = setDoc;
-  window.firestoreGetDocs = getDocs;
-  window.firestoreQuery = query;
-  window.firestoreWhere = where;
-  window.firestoreWriteBatch = writeBatch;
+  window.firestoreDeleteDoc = deleteDoc;   // expose for main script
 
-  // --- Sync logic inside module, so Firebase is ready ---
   let currentUser = null;
-  let syncInProgress = false;
+  let unsubscribeEntries = null;
+  let unsubscribeTrash = null;
+  let applyingCloudUpdate = false;
 
-  async function syncLocalToCloud(userId) {
-    if (!userId || syncInProgress) return;
-    syncInProgress = true;
-    try {
-      const batch = writeBatch(db);
-      const entriesRef = collection(db, 'entries');
-      for (const entry of entries) {
-        const docRef = doc(entriesRef, entry.id.toString());
-        batch.set(docRef, { userId: userId, ...entry, lastUpdated: new Date().toISOString() }, { merge: true });
+  // ---- apply cloud changes to local (merge with conflict resolution) ----
+  function applyEntriesSnapshot(snapshot) {
+    if (applyingCloudUpdate) return;
+    applyingCloudUpdate = true;
+    const cloudEntries = [];
+    snapshot.forEach(doc => {
+      cloudEntries.push({ id: parseInt(doc.id), ...doc.data() });
+    });
+
+    const localMap = new Map(entries.map(e => [e.id, e]));
+    let changed = false;
+
+    for (const cloudEntry of cloudEntries) {
+      const localEntry = localMap.get(cloudEntry.id);
+      if (!localEntry) {
+        entries.push(cloudEntry);
+        changed = true;
+      } else if (new Date(cloudEntry.lastUpdated) > new Date(localEntry.lastUpdated)) {
+        const idx = entries.findIndex(e => e.id === cloudEntry.id);
+        entries[idx] = cloudEntry;
+        changed = true;
       }
-      await batch.commit();
-      console.log('Local data synced to cloud');
-    } catch (error) {
-      console.error('Sync to cloud failed:', error);
-    } finally {
-      syncInProgress = false;
     }
-  }
-
-  async function syncCloudToLocal(userId) {
-    if (!userId) return;
-    try {
-      const q = query(collection(db, 'entries'), where('userId', '==', userId));
-      const snapshot = await getDocs(q);
-      const cloudEntries = [];
-      snapshot.forEach(doc => {
-        cloudEntries.push({ id: parseInt(doc.id), ...doc.data() });
-      });
-      if (cloudEntries.length === 0) return;
-
-      const localMap = new Map(entries.map(e => [e.id, e]));
-      let changed = false;
-      for (const cloudEntry of cloudEntries) {
-        const localEntry = localMap.get(cloudEntry.id);
-        if (!localEntry) {
-          entries.push(cloudEntry);
-          changed = true;
-        } else if (new Date(cloudEntry.lastUpdated) > new Date(localEntry.lastUpdated)) {
-          const index = entries.findIndex(e => e.id === cloudEntry.id);
-          entries[index] = cloudEntry;
-          changed = true;
-        }
+    // remove local entries not in cloud (deleted elsewhere)
+    for (const local of entries) {
+      if (!cloudEntries.some(c => c.id === local.id)) {
+        const idx = entries.findIndex(e => e.id === local.id);
+        if (idx !== -1) entries.splice(idx, 1);
+        changed = true;
       }
-      if (changed) {
-        await saveData();
+    }
+
+    if (changed) {
+      saveData().then(() => {
         updateDashboard();
         renderEntries();
         renderTrash();
         initCharts();
-      }
-    } catch (error) {
-      console.error('Sync from cloud failed:', error);
+      });
     }
+    applyingCloudUpdate = false;
   }
 
+  function applyTrashSnapshot(snapshot) {
+    if (applyingCloudUpdate) return;
+    applyingCloudUpdate = true;
+    const cloudTrash = [];
+    snapshot.forEach(doc => {
+      cloudTrash.push({ id: parseInt(doc.id), ...doc.data() });
+    });
+
+    const localMap = new Map(trash.map(t => [t.id, t]));
+    let changed = false;
+
+    for (const cloudItem of cloudTrash) {
+      const localItem = localMap.get(cloudItem.id);
+      if (!localItem) {
+        trash.push(cloudItem);
+        changed = true;
+      } else if (new Date(cloudItem.lastUpdated) > new Date(localItem.lastUpdated)) {
+        const idx = trash.findIndex(t => t.id === cloudItem.id);
+        trash[idx] = cloudItem;
+        changed = true;
+      }
+    }
+    for (const local of trash) {
+      if (!cloudTrash.some(c => c.id === local.id)) {
+        const idx = trash.findIndex(t => t.id === local.id);
+        if (idx !== -1) trash.splice(idx, 1);
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      saveData().then(() => {
+        updateDashboard();
+        renderEntries();
+        renderTrash();
+        initCharts();
+      });
+    }
+    applyingCloudUpdate = false;
+  }
+
+  // ---- push local changes to cloud (upsert + delete) ----
+  async function syncEntriesToCloud() {
+    if (!currentUser) return;
+    const batch = writeBatch(db);
+    const entriesRef = collection(db, 'entries');
+
+    // first, get all cloud entry IDs for this user to find deletions
+    const q = query(entriesRef, where('userId', '==', currentUser.uid));
+    const cloudSnapshot = await getDocs(q);
+    const cloudIds = new Set(cloudSnapshot.docs.map(d => parseInt(d.id)));
+
+    // local entries: set/update
+    for (const entry of entries) {
+      const docRef = doc(entriesRef, entry.id.toString());
+      batch.set(docRef, {
+        userId: currentUser.uid,
+        ...entry,
+        lastUpdated: new Date().toISOString()
+      }, { merge: true });
+      cloudIds.delete(entry.id);
+    }
+
+    // remaining cloudIds are deleted locally → delete from cloud
+    for (const id of cloudIds) {
+      const docRef = doc(entriesRef, id.toString());
+      batch.delete(docRef);
+    }
+
+    await batch.commit();
+  }
+
+  async function syncTrashToCloud() {
+    if (!currentUser) return;
+    const batch = writeBatch(db);
+    const trashRef = collection(db, 'trash');
+
+    const q = query(trashRef, where('userId', '==', currentUser.uid));
+    const cloudSnapshot = await getDocs(q);
+    const cloudIds = new Set(cloudSnapshot.docs.map(d => parseInt(d.id)));
+
+    for (const item of trash) {
+      const docRef = doc(trashRef, item.id.toString());
+      batch.set(docRef, {
+        userId: currentUser.uid,
+        ...item,
+        lastUpdated: new Date().toISOString()
+      }, { merge: true });
+      cloudIds.delete(item.id);
+    }
+
+    for (const id of cloudIds) {
+      const docRef = doc(trashRef, id.toString());
+      batch.delete(docRef);
+    }
+
+    await batch.commit();
+  }
+
+  // Trigger sync after any local change
+  window.triggerCloudSync = async function() {
+    if (!currentUser) return;
+    await syncEntriesToCloud();
+    await syncTrashToCloud();
+  };
+
+  // ---- Firestore real‑time listeners ----
+  function startFirestoreListeners() {
+    if (unsubscribeEntries) unsubscribeEntries();
+    if (unsubscribeTrash) unsubscribeTrash();
+
+    const entriesQuery = query(collection(db, 'entries'), where('userId', '==', currentUser.uid));
+    const trashQuery = query(collection(db, 'trash'), where('userId', '==', currentUser.uid));
+
+    unsubscribeEntries = onSnapshot(entriesQuery, applyEntriesSnapshot);
+    unsubscribeTrash = onSnapshot(trashQuery, applyTrashSnapshot);
+  }
+
+  function stopFirestoreListeners() {
+    if (unsubscribeEntries) unsubscribeEntries();
+    if (unsubscribeTrash) unsubscribeTrash();
+    unsubscribeEntries = null;
+    unsubscribeTrash = null;
+  }
+
+  // ---- auth state ----
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     const signInBtn = document.getElementById('signInBtn');
@@ -111,34 +219,23 @@
     const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
 
     if (user) {
-      // Desktop buttons
       signInBtn.style.display = 'none';
       signOutBtn.style.display = 'inline-flex';
       userEmailSpan.textContent = `Welcome, ${user.email}`;
-      // Mobile buttons
       if (mobileSignInBtn) mobileSignInBtn.style.display = 'none';
       if (mobileSignOutBtn) mobileSignOutBtn.style.display = 'inline-flex';
 
-      await syncCloudToLocal(user.uid);
-      await syncLocalToCloud(user.uid);
+      startFirestoreListeners();
     } else {
-      // Desktop buttons
       signInBtn.style.display = 'inline-flex';
       signOutBtn.style.display = 'none';
       userEmailSpan.textContent = '';
-      // Mobile buttons
       if (mobileSignInBtn) mobileSignInBtn.style.display = 'inline-flex';
       if (mobileSignOutBtn) mobileSignOutBtn.style.display = 'none';
+
+      stopFirestoreListeners();
     }
   });
-
-  const originalSaveData = window.saveData;
-  window.saveData = async function() {
-    await originalSaveData();
-    if (currentUser) {
-      setTimeout(() => syncLocalToCloud(currentUser.uid), 100);
-    }
-  };
 
   document.getElementById('signInBtn')?.addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
   document.getElementById('signOutBtn')?.addEventListener('click', () => signOut(auth));
@@ -146,13 +243,6 @@
   const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
   if (mobileSignInBtn) mobileSignInBtn.addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
   if (mobileSignOutBtn) mobileSignOutBtn.addEventListener('click', () => signOut(auth));
-
-  setInterval(() => {
-    if (currentUser && navigator.onLine) {
-      syncLocalToCloud(currentUser.uid);
-      syncCloudToLocal(currentUser.uid);
-    }
-  }, 300000);
 </script>
     <style>
         /* ===== DESKTOP STYLES (ORIGINAL – UNCHANGED) ===== */
@@ -1546,8 +1636,11 @@
         
         // Combined save function
         async function saveData() {
-            await saveToIndexedDB();
-        }
+    await saveToIndexedDB();          // local IndexedDB save
+    if (window.triggerCloudSync) {   // agar cloud sync available hai to
+        await window.triggerCloudSync();
+    }
+}
         
         // Helper: escape HTML to prevent XSS
         function escapeHtml(str) {
@@ -2959,28 +3052,44 @@
         }
         
         async function resetAllData() {
-            if (confirm('Are you sure you want to reset ALL data? This cannot be undone.')) {
-                // Clear IndexedDB
-                if (db) {
-                    const tx = db.transaction([STORE_ENTRIES, STORE_TRASH], 'readwrite');
-                    tx.objectStore(STORE_ENTRIES).clear();
-                    tx.objectStore(STORE_TRASH).clear();
-                }
-                
-                // Clear localStorage
-                localStorage.removeItem('expenseEntries');
-                localStorage.removeItem('expenseTrash');
-                
-                entries = [];
-                trash = [];
-                
-                updateDashboard();
-                renderEntries();
-                renderTrash();
-                initCharts();
-                alert('All data has been reset successfully!');
-            }
+    if (confirm('⚠️ Are you sure you want to reset ALL data? This will delete your data from all devices (cloud) and cannot be undone.')) {
+        // Clear IndexedDB
+        if (db) {
+            const tx = db.transaction([STORE_ENTRIES, STORE_TRASH], 'readwrite');
+            tx.objectStore(STORE_ENTRIES).clear();
+            tx.objectStore(STORE_TRASH).clear();
         }
+        localStorage.removeItem('expenseEntries');
+        localStorage.removeItem('expenseTrash');
+        
+        entries = [];
+        trash = [];
+        
+        // Delete all Firestore data for current user (using window‑exported functions)
+        if (window.firebaseAuth && window.firebaseDb && window.firebaseAuth.currentUser) {
+            const userId = window.firebaseAuth.currentUser.uid;
+            const entriesRef = window.firestoreCollection(window.firebaseDb, 'entries');
+            const trashRef = window.firestoreCollection(window.firebaseDb, 'trash');
+            const entriesSnapshot = await window.firestoreGetDocs(
+                window.firestoreQuery(entriesRef, window.firestoreWhere('userId', '==', userId))
+            );
+            const trashSnapshot = await window.firestoreGetDocs(
+                window.firestoreQuery(trashRef, window.firestoreWhere('userId', '==', userId))
+            );
+            
+            const batch = window.firestoreWriteBatch(window.firebaseDb);
+            entriesSnapshot.forEach(doc => batch.delete(doc.ref));
+            trashSnapshot.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+        }
+        
+        updateDashboard();
+        renderEntries();
+        renderTrash();
+        initCharts();
+        alert('All data has been reset successfully!');
+    }
+}
         
         async function handleFormSubmit(e) {
             e.preventDefault();

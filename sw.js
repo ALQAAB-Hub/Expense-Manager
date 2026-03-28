@@ -1,3 +1,4 @@
+const CACHE_NAME = 'cash-manager-v1';
 const urlsToCache = [
   './',
   './index.html',
@@ -9,7 +10,7 @@ const urlsToCache = [
   './js/all.min.js'
 ];
 
-// Install
+// Install event – cache all static files
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -19,7 +20,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate
+// Activate event – clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
@@ -32,22 +33,25 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch (offline‑first)
+// Fetch event – serve from cache, fallback to network, then cache new responses
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request).then(networkResponse => {
-        // Optionally cache new files
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
-          return networkResponse;
+    caches.match(event.request)
+      .then(response => {
+        if (response) return response;
+        return fetch(event.request).then(networkResponse => {
+          // Cache the fetched response for future use
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
         });
-      });
-    }).catch(() => {
-      return new Response('Offline mode – connect to internet and refresh.', {
-        status: 503,
-        statusText: 'Service Unavailable'
-      });
-    })
+      })
+      .catch(() => {
+        return new Response('Offline – please check your internet connection.', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
+      })
   );
 });
